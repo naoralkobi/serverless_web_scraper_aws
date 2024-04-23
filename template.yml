@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS SAM Template with Lambda Layer
+
+Resources:
+  # Define a Lambda Layer
+  RequestsLayer:
+    Type: 'AWS::Serverless::LayerVersion'  # Corrected type
+    Properties:
+      LayerName: "RequestsLayer"  # Name for the layer
+      ContentUri: lambda_layer_requests/  # Local directory for the layer
+      CompatibleRuntimes:
+        - python3.9  # Ensure this matches your Lambda function's runtime
+      Description: "Lambda Layer for Requests Module"  # Description for the layer
+
+  # Define the Lambda function
+  RequestsLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: src/lambda/scraper/  # Lambda function code
+      Handler: handler.lambda_handler  # Lambda function handler
+      Runtime: python3.9  # Python runtime version
+      Layers:
+        - !Ref RequestsLayer  # Reference to the Lambda Layer
+      Timeout: 10  # Lambda function timeout in seconds
